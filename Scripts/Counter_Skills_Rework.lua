@@ -672,6 +672,7 @@ function Tick( tick )
 				UseEulScepterSelf()	
 				Useblackking()
 				UseShadowBlade()
+				UseBladeMail()
 				if v:GetAbility(4) and v:GetAbility(4).name == "lina_laguna_blade" then
 					target = v
 					TusksnowballTarget()
@@ -702,6 +703,12 @@ function Tick( tick )
 			elseif me:DoesHaveModifier("modifier_crystal_maiden_freezing_field_slow") then                                                      
 				Nyx()
 				Useblackking()
+			elseif me:DoesHaveModifier("modifier_zuus_thundergod") then 
+				Puck()	
+				Juggernautfury()
+				UseEulScepterSelf()
+				Useblackking() 
+				Nyx()	
 			elseif me:DoesHaveModifier("modifier_pugna_life_drain") then  
 				Nyx()
 				Puck()				
@@ -1158,6 +1165,7 @@ function Tick( tick )
 									UseShadowBlade()
 									Useshadowamulet()
 									UseManta()
+									SlarkPounce()
 								end
 							end
 						end
@@ -1223,6 +1231,7 @@ function Tick( tick )
 									LoneDruidUlt()
 									SlarkPounce()
 									UseManta()
+									UseBladeMail()
 									local sniperultdamage = 0
 									if v:GetAbility(4).level == 1 then
 										sniperultdamage = 350*3/4
@@ -1342,6 +1351,7 @@ function Tick( tick )
 									UseShadowBlade()
 									Useshadowamulet()
 									Useblackking()
+									UseBladeMail()
 								end
 							end
 						end
@@ -1453,6 +1463,7 @@ function Tick( tick )
 									UseBlinkDaggerfront()
 									AlchemistRage()
 									UseManta()
+									SlarkPounce()
 								end
 							end
 						end
@@ -1470,6 +1481,7 @@ function Tick( tick )
 									AlchemistRage()
 									UseShadowBlade()
 									UseManta()
+									SlarkPounce()
 								end
 							end
 						end
