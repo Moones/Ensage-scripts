@@ -695,7 +695,6 @@ function Tick( tick )
 					PuckW(false)
 					UseEulScepterTarget()
 					UseOrchidtarget()
-					Emberremnantnow()
 					UseSheepStickTarget()					
 				end
 				UseShadowBlade()
@@ -1303,9 +1302,7 @@ function Tick( tick )
 									Juggernautfury()
 									Puck()
 									UseBlinkDagger()
-									Emberremnantnow()
 									Embersleighttargetcal()
-									Emberguard()
 								end
 							end
 						end
@@ -2101,11 +2098,17 @@ end
 function Emberremnantnow()
 	if activated == 0 then
 		for t=1,6 do
-			if me:GetAbility(t) and me:GetAbility(t).name == "ember_spirit_activate_fire_remnant" and me:GetAbility(t).state == -1 then
-				me:CastAbility(me:GetAbility(t))
-				activated=1
-				sleepTick= GetTick() +160
-				return 
+			if me:GetAbility(t) ~= nil then
+				if me:GetAbility(t).name == "ember_spirit_activate_fire_remnant" and me:GetAbility(t).state == -1 then
+						alfa = me.rotR
+						local p = Vector(me.position.x + 100 * math.cos(alfa), me.position.y + 100 * math.sin(alfa), me.position.z)
+						ember_spirit_fire_remnant=me:GetAbility(5)
+						me:CastAbility(ember_spirit_fire_remnant,p)
+						activated=1
+						remnant = 1
+						sleepTick= GetTick() +160
+						return
+				end
 			end
 		end
 	end
@@ -2117,7 +2120,7 @@ function StormUltfront()
 			if me:GetAbility(t) ~= nil then
 				if me:GetAbility(t).name == "storm_spirit_ball_lightning" and me:GetAbility(t).state == -1 then
 						alfa = me.rotR
-						local p = Vector(me.x + 100 * math.cos(alfa), me.y + 100 * math.sin(alfa), me.z) 
+						local p = Vector(me.position.x + 100 * math.cos(alfa), me.position.y + 100 * math.sin(alfa), me.position.z) 
 						storm_spirit_ball_lightning=me:GetAbility(t)
 						me:CastAbility(storm_spirit_ball_lightning,p)
 						activated=1
@@ -2135,7 +2138,7 @@ function StormUltfront2(moverange)
 			if me:GetAbility(t) ~= nil then
 				if me:GetAbility(t).name == "storm_spirit_ball_lightning" and me:GetAbility(t).state == -1 then
 						alfa = me.rotR
-						local p = Vector(me.x + moverange * math.cos(alfa), me.y + moverange * math.sin(alfa), me.z) 
+						local p = Vector(me.position.x + moverange * math.cos(alfa), me.position.y + moverange * math.sin(alfa), me.position.z) 
 						storm_spirit_ball_lightning=me:GetAbility(t)
 						me:CastAbility(storm_spirit_ball_lightning,p)
 						activated=1
@@ -2153,7 +2156,7 @@ function Antiblinkfront()
 			if me:GetAbility(t) ~= nil then
 				if me:GetAbility(t).name == "antimage_blink" and me:GetAbility(t).state == -1 then
 						alfa = me.rotR
-						local p = Vector(me.x + 100 * math.cos(alfa), me.y + 100 * math.sin(alfa), me.z) 
+						local p = Vector(me.position.x + 100 * math.cos(alfa), me.position.y + 100 * math.sin(alfa), me.position.z) 
 						storm_spirit_ball_lightning=me:GetAbility(t)
 						me:CastAbility(storm_spirit_ball_lightning,p)
 						activated=1
