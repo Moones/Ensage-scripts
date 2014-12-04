@@ -90,6 +90,7 @@ function Tick( tick )
 							UseEulScepterSelf()
 							UseShadowBlade()
 							PLDoppleganger()
+							OracleFateEdict()
 							timees = nil
 						end
 					end	
@@ -244,6 +245,7 @@ function Tick( tick )
 							Useblackking()
 							Lifestealerrage()
 							PLDoppleganger()
+							OracleFalsePromise()
 						end
 					end
 				end
@@ -262,6 +264,7 @@ function Tick( tick )
 						Useblackking()
 						Lifestealerrage()
 						UseBlinkDagger() Antiblinkhome()
+						OracleFateEdict()
 					end
 				end
 			elseif v.name == "npc_dota_hero_sven" then
@@ -302,6 +305,7 @@ function Tick( tick )
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
 							Nyx()
+							OracleFateEdict()
 						end
 					end
 				end
@@ -876,6 +880,7 @@ function Tick( tick )
 				UseEulScepterSelf()
 				Useblackking()
 				PLDoppleganger()
+				OracleFateEdict()
 				if v:GetAbility(4) and v:GetAbility(4).name == "lion_finger_of_death" then
 					target = v
 					TusksnowballTarget()
@@ -923,6 +928,7 @@ function Tick( tick )
 						UseShadowBlade()
 						Embersleighttargetcal()
 						PLDoppleganger()
+						OracleFateEdict()
 						return
 					elseif k.name == "phantom_assassin_stifling_dagger" then
 						Nyx()
@@ -1066,6 +1072,7 @@ function Tick( tick )
 							SlarkDarkPact()
 							SlarkPounce()	
 							PLDoppleganger()
+							OracleFateEdict()
 							return
 						end
 					end
@@ -1536,6 +1543,7 @@ function Tick( tick )
 									UseManta()
 									SlarkPounce()
 									PLDoppleganger()
+									OracleFateEdict()
 								end
 							end
 						end
@@ -2074,6 +2082,8 @@ function Tick( tick )
 									Embersleighttargetcal()
 									Puck()
 									PLDoppleganger()
+									OracleFateEdict()
+									UseBladeMail()
 								end
 							end
 						end
@@ -2098,6 +2108,7 @@ function Tick( tick )
 										UseOrchidtarget() SkySilence()
 										UseEulScepterTarget()
 										Emberchains()
+										OracleFalsePromise()
 									else
 										Silencerult()
 										TusksnowballTarget()
@@ -2788,6 +2799,32 @@ function Nyx()
 			activated = 1
 			sleepTick = GetTick() + 500
 			return 
+		end
+	end
+end
+
+function OracleFateEdict()
+	if activated == 0 then
+		for t=1,6 do
+			if me:GetAbility(t) and me:GetAbility(t).name == "oracle_fates_edict" and me:GetAbility(t).state == -1 then
+				me:CastAbility(me:GetAbility(t),me)
+				activated=1
+				sleepTick= GetTick() +500
+				return 
+			end
+		end
+	end
+end
+
+function OracleFalsePromise()
+	if activated == 0 then
+		for t=1,6 do
+			if me:GetAbility(t) and me:GetAbility(t).name == "oracle_false_promise" and me:GetAbility(t).state == -1 then
+				me:CastAbility(me:GetAbility(t),me)
+				activated=1
+				sleepTick= GetTick() +500
+				return 
+			end
 		end
 	end
 end
