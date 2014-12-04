@@ -121,7 +121,7 @@ function Main(tick)
 			if IsKeyDown(combokey) and victim and not client.chat and not me:DoesHaveModifier("modifier_nyx_assassin_vendetta") then
 				
 				local manaburn = me:GetAbility(2)
-				local manadmg = {3.5,4,4.5,5}
+				local manadmg = manaburn:GetSpecialData("float_multiplier",manaburn.level)
 				local dagon = me:FindDagon()
 				local ethereal = me:FindItem("item_ethereal_blade")
 				local manaboots = me:FindItem("item_arcane_boots")
