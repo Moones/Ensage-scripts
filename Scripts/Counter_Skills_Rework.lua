@@ -47,6 +47,36 @@ function Tick( tick )
 						end
 					end
 				end
+			elseif v.name == "npc_dota_hero_life_stealer" then
+				if v:GetAbility(3) and v:GetAbility(3).level > 0 and v:GetAbility(3).abilityPhase then
+					if GetDistance2D(v,me) < 500 then
+						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+						if turntime == 0 then
+							UseBlinkDagger() Antiblinkhome()
+							UseEulScepterTarget()
+							UseEulScepterSelf()
+							PuckW(true)
+							UseGhostScepter()
+							UseSheepStickTarget()
+							UseOrchidtarget() SkySilence()
+							UseShadowBlade()
+							PLDoppleganger()
+						end
+					end
+				end		
+			elseif v.name == "npc_dota_hero_meepo" then
+				if v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
+					if GetDistance2D(v,me) < 375 then
+						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+						if turntime == 0 then
+							UseBlinkDagger() Antiblinkhome()
+							UseEulScepterSelf()
+							PuckW(true)
+							PLDoppleganger()
+							Useblackking()
+						end
+					end
+				end					
 			elseif v.name == "npc_dota_hero_skeleton_king" then
 				if v:GetAbility(1) and v:GetAbility(1).level > 0 and v:GetAbility(1).abilityPhase then
 					if GetDistance2D(v,me) < 600 then
@@ -430,7 +460,6 @@ function Tick( tick )
 						NyxVendetta()
 						Puck()
 						Lifestealerrage()
-						Useblackking()
 						UseEulScepterSelf()
 						wait = 0						
 				elseif  v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
@@ -1387,12 +1416,7 @@ function Tick( tick )
 						UseOrchidtarget() SkySilence()
 						PLDoppleganger()
 						SkySilence()
-						return					
-					elseif v.name == "npc_dota_hero_meepo" and GetDistance2D(v,me) < 400 then
-						UseBlinkDagger() Antiblinkhome()
-						Puck()
-						PLDoppleganger()
-						return					
+						return									
 					elseif GetDistance2D(v,me) <= v.attackRange+150 then
 						UseBlinkDagger() Antiblinkhome()
 						UseEulScepterTarget()
