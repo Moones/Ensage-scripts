@@ -456,6 +456,7 @@ function Tick( tick )
 						waittime = GetTick() + 100 - (client.avgLatency/1000)
 						wait = 1 						
 					elseif GetTick() > waittime then
+						Antiblinkhome()
 						Nyx()
 						UseShadowBlade()
 						TemplarMeld()
@@ -465,19 +466,39 @@ function Tick( tick )
 						Puck()
 						Lifestealerrage()
 						UseEulScepterSelf()
-						wait = 0						
-				elseif  v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
-					if GetDistance2D(v,me) < 760 then
+						wait = 0		
+					end
+				end
+				if v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
+					if GetDistance2D(v,me) < 750 then
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
-							if wait == 0 then
-								waittime = GetTick() + 100 - (client.avgLatency / 1000)
-								wait = 1 
-							else
-								if GetTick() > waittime then
-									Nyx()
-									wait = 0
-								end
+						if wait == 0 then
+							waittime = GetTick() + 100 - (client.avgLatency/1000)
+							wait = 1
+						else
+							if GetTick() > waittime then
+								UseBladeMail()
+								Puck()
+								Nyx()
+								wait = 0
+							end
+						end
+					end
+				end
+				if v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
+					if GetDistance2D(v,me) < 750 then
+						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+						if turntime == 0 then
+						if wait == 0 then
+							waittime = GetTick() + 100 - (client.avgLatency/1000)
+							wait = 1
+						else
+							if GetTick() > waittime then
+								UseBladeMail()
+								Puck()
+								Nyx()
+								wait = 0
 							end
 						end
 					end
@@ -951,236 +972,6 @@ function Tick( tick )
 						UseShadowBlade()
 						Nyx()
 					end
-				end
-			end
-			
-			--Projectile dodge--
-
-			local cast = entityList:GetEntities({classId=282})
-			local rocket = entityList:GetEntities({classId=CDOTA_BaseNPC})
-			local hit = entityList:GetProjectiles({source=v,target=me})
-			local notvisible_enemies = entityList:GetEntities({type = LuaEntity.TYPE_HERO, alive = true, team = me:GetEnemyTeam()})
-			local projs = entityList:GetProjectiles({})
-			for i,k in ipairs(projs) do
-				if k.target == me then
-					if k.name == "tinker_missile" then
-						Nyx()
-						Puck()
-						TemplarMeld()
-						Embersleighttargetcal()
-						LoneDruidUlt()
-						UseBlinkDaggerfront()
-						UseShadowBlade()
-						Embersleighttargetcal()
-						PLDoppleganger()
-						OracleFateEdict()
-						return
-					elseif k.name == "phantom_assassin_stifling_dagger" then
-						Nyx()
-						Puck()
-						TemplarMeld()
-						Embersleighttargetcal()
-						LoneDruidUlt()
-						UseBlinkDagger() Antiblinkhome()
-						UseShadowBlade()
-						Embersleighttargetcal()
-						PLDoppleganger()
-						return
-					elseif k.name == "queen_scream_of_pain" then
-						Nyx()
-						Puck()
-						TemplarMeld()
-						Embersleighttargetcal()
-						LoneDruidUlt()
-						UseBlinkDagger() Antiblinkhome()
-						UseShadowBlade()
-						Embersleighttargetcal()
-						PLDoppleganger()
-						return
-					elseif k.name == "ogre_magi_ignite" then
-						Nyx()
-						Puck()
-						TemplarMeld()
-						Embersleighttargetcal()
-						LoneDruidUlt()
-						UseBlinkDaggerfront()
-						UseShadowBlade()
-						Embersleighttargetcal()
-						PLDoppleganger()
-						return
-					elseif k.name == "necrolyte_pulse_enemy" and GetDistance2D(me,k.position) < 200 then
-						Nyx()
-						Puck()
-						LoneDruidUlt()
-						UseEulScepterSelf()
-						PLDoppleganger()
-						return
-					elseif k.speed == 1000 and v:GetAbility(4).name == "huskar_life_break" then
-						if math.ceil(v:GetAbility(4).cd - 0.1) == math.ceil(v:GetAbility(4):GetCooldown(v:GetAbility(4).level)) then									
-							Puck()
-							Nyx()
-							SlarkShadowDance()
-							Juggernautfury()
-							Lifestealerrage()
-							Embersleighttargetcal()
-							UseEulScepterSelf()
-							UseBlinkDagger() Antiblinkhome()
-							UseShadowBlade()
-							Useshadowamulet()
-							Useblackking()
-							UseBladeMail()
-							PLDoppleganger()
-							OracleFateEdict()
-							return
-						end
-					elseif k.name == "sniper_assassinate" then
-						Puck()
-						UseBlinkDagger() Antiblinkhome()
-						TemplarRefraction()
-						AlchemistRage()
-						Juggernautfury()
-						Nyx()
-						UseEulScepterSelf()
-						LoneDruidUlt()
-						SlarkPounce()
-						UseManta()
-						UseBladeMail()
-						PLDoppleganger()
-						EmberGuard()
-						if v:GetAbility(4).name == "sniper_assassinate" then
-							local sniperultdamage = 0
-							if v:GetAbility(4).level == 1 then
-								sniperultdamage = 350*3/4
-							end
-							if v:GetAbility(4).level == 2 then
-								sniperultdamage = 505*3/4
-							end
-							if v:GetAbility(4).level == 3 then
-								sniperultdamage = 655*3/4
-							end
-							if sniperultdamage > me.health then
-								if GetDistance2D(v,me) > 1000 then
-									ShadowdemonDisruptionself()
-									ObsidianImprisonmentself()
-								end
-								Phoenixsupernova()
-								UseBloodStone()
-							end
-						end
-						return
-					end
-				end
-				if k.name == "windrunner_shackleshot" and (k.target == me or AngleBelow(v,k.target,me,7)) then
-					Puck()
-					Nyx()
-					UseBlinkDagger() Antiblinkhome()
-					UseShadowBlade()
-					SlarkDarkPact()
-					SlarkPounce()
-					PLDoppleganger()
-					return
-				end
-			end
-			for i, z in ipairs(rocket) do
-				if z.dayVision == 1000 and z:DoesHaveModifier("modifier_truesight") then
-					if GetDistance2D(z,me) < 300 then
-						if GetDistance2D(z,me) < 200 + client.latency then
-							Puck()
-							Lifestealerrage()
-							Juggernautfury()
-							UseEulScepterSelf()
-							SlarkDarkPact()
-							SlarkPounce()						
-						else
-							UseBlinkDagger() Antiblinkhome()							
-						end
-						return
-					end
-				elseif z.dayVision == 0 and z.unitState == 59802112 then
-					if GetDistance2D(z,me) < 700 then
-						if v.classId == CDOTA_Unit_Hero_SpiritBreaker then
-							if GetDistance2D(v,me) < 900 then
-								target = v 
-								UseEulScepterTarget()
-								UseSheepStickTarget()
-								return
-							end
-						end
-					end
-				elseif #z.modifiers > 0 and z:DoesHaveModifier("modifier_lina_light_strike_array") then
-					for i,k in ipairs(notvisible_enemies) do
-						if k.classId == CDOTA_Unit_Hero_Lina and GetDistance2D(z,me) < 250 then
-							Puck()
-							UseBlinkDagger() Antiblinkhome()
-							Lifestealerrage()
-							Juggernautfury()
-							UseEulScepterSelf()
-							SlarkDarkPact()
-							SlarkPounce()	
-							PLDoppleganger()
-							OracleFateEdict()
-							return
-						end
-					end
-				elseif #z.modifiers > 0 and z:DoesHaveModifier("modifier_leshrac_split_earth_thinker") then
-					for i,k in ipairs(notvisible_enemies) do
-						if k.classId == CDOTA_Unit_Hero_Leshrac and GetDistance2D(z,me) < GetSpecial(k:GetAbility(1),"radius",k:GetAbility(1).level+0)+25 then
-							Puck()
-							UseBlinkDagger() Antiblinkhome()
-							Lifestealerrage()
-							Juggernautfury()
-							UseEulScepterSelf()
-							SlarkDarkPact()
-							SlarkPounce()	
-							PLDoppleganger()
-							return
-						end
-					end
-				end
-			end	
-			
-			for i, z in ipairs(rocket) do
-				if z.team ~= me.team and z:DoesHaveModifier("modifier_rattletrap_rocket_flare") then
-					if GetDistance2D(z,me) < 650 then
-						Puck()
-						UseBlinkDagger()
-						if v:GetAbility(3).name == "rattletrap_rocket_flare" then
-							if v:GetAbility(3):GetDamage(v:GetAbility(3).level)*(1 - me.magicDmgResist) >= me.health then
-								UseEulScepterSelf()
-								return
-							end
-						end
-					end
-				end
-			end
-			
-			for i, z in ipairs(hit) do
-				local ShadowBlade = v:FindItem("item_invis_sword")
-				if ShadowBlade and ShadowBlade.cd > 14 then
-					target = v
-					Puck()
-					UseBlinkDagger() Antiblinkhome()
-					UseEulScepterTarget()
-					UseSheepStickTarget()
-					UseOrchidtarget() SkySilence()
-					UseShadowBlade()
-					SlarkPounce()
-					PLDoppleganger()
-					return
-				end
-				if z.source and z.source.dmgMin >= me.health then
-					target = v
-					Puck()
-					UseBlinkDagger() Antiblinkhome()
-					UseEulScepterSelf()
-					UseSheepStickTarget()
-					UseOrchidtarget() SkySilence()
-					UseShadowBlade()
-					SlarkPounce()
-					PLDoppleganger()
-					ObsidianImprisonmentself()
-					SlarkShadowDance()
-					return
 				end
 			end
 			
@@ -2062,6 +1853,72 @@ function Tick( tick )
 								end
 							end
 						end
+					elseif v:GetAbility(t).name == "sniper_assassinate" then
+						if math.ceil(v:GetAbility(t).cd - 0.9) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 3000 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Antiblinkhome()
+									TemplarRefraction()
+									AlchemistRage()
+									Juggernautfury()
+									Nyx()
+									UseEulScepterSelf()
+									SlarkPounce()
+									UseManta()
+									UseBladeMail()
+									PLDoppleganger()
+									EmberGuard()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "huskar_life_break" then
+						if math.ceil(v:GetAbility(t).cd - 0.7) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 550 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Antiblinkhome()
+									TemplarRefraction()
+									AlchemistRage()
+									Juggernautfury()
+									Nyx()
+									UseEulScepterSelf()
+									SlarkPounce()
+									UseManta()
+									UseBladeMail()
+									PLDoppleganger()
+									EmberGuard()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "life_stealer_open_wounds" then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 800 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									UseShadowBlade()
+									SlarkDarkPact()
+									PLDoppleganger()
+									UseEulScepterSelf()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "windrunner_shackleshot" then
+						if math.ceil(v:GetAbility(t).cd - 0.7) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 800 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Nyx()
+									UseShadowBlade()
+									SlarkDarkPact()
+									PLDoppleganger()
+									UseEulScepterSelf()
+								end
+							end
+						end
 					elseif v:GetAbility(t).name == "windrunner_powershot" then
 						if math.ceil(v:GetAbility(t).cd + 0.9) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
 							if GetDistance2D(v,me) < 1500 then
@@ -2135,6 +1992,23 @@ function Tick( tick )
 									OracleFateEdict()
 									UseBladeMail()
 								end
+							end
+						end
+					elseif v:GetAbility(t).name == "tinker_heat_seeking_missile" then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 2500 then
+								Puck()
+								Antiblinkhome()
+								UseEulScepterSelf()
+								Nyx()
+								BountyhunterWindwalk()
+								WeaverShukuchi()
+								PLDoppleganger()
+								SandkinSandstorm()
+								UseShadowBlade()
+								TusksnowballTarget()
+								TemplarMeld()
+								Useshadowamulet()
 							end
 						end
 					elseif v:GetAbility(t).name == "disruptor_glimpse" then
@@ -2906,22 +2780,6 @@ function WWColdEmbrace()
 				sleepTick= GetTick() +500
 				return 
 			end
-		end
-	end
-end
-
-function Useblackking()
-	for t = 1, 6 do
-		if me:HasItem(t) and me:GetItem(t).name == "item_black_king_bar" then
-			item_black_king_bar = me:GetItem(t)
-		end
-	end
-	if activated == 0 then
-		if item_black_king_bar and item_black_king_bar.state== -1 then
-			me:CastAbility(item_black_king_bar)
-			activated=1
-			sleepTick= GetTick() +500
-			return
 		end
 	end
 end
