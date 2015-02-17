@@ -307,6 +307,17 @@ function Tick( tick )
 						end
 					end
 				end
+			elseif v.name == "npc_dota_hero_phantom_assassin" then
+				if v:GetAbility(1) and v:GetAbility(1).level > 0 and v:GetAbility(1).abilityPhase then
+					if GetDistance2D(v,me) < 1200 then
+						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+						if turntime == 0 then
+							Nyx()
+							Puck()
+							OracleFateEdict()
+						end
+					end
+				end
 			elseif v.name == "npc_dota_hero_queenofpain" then
 				if  v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
 					if GetDistance2D(v,me) < 1200 then
@@ -378,12 +389,11 @@ function Tick( tick )
 					if GetDistance2D(v,me) < 200 then
 						PuckW(true)	
 						target = v
-						UseShadowBlade()
-						Useblackking()
-						UseEulScepterSelf()
 						UseBlinkDagger() Antiblinkhome()
 						UseSheepStickTarget()
 						UseOrchidtarget() SkySilence()
+						Puck()
+						Nyx()
 					end
 				end
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
@@ -456,6 +466,7 @@ function Tick( tick )
 						waittime = GetTick() + 100 - (client.avgLatency/1000)
 						wait = 1 						
 					elseif GetTick() > waittime then
+						Antiblinkhome()
 						Nyx()
 						UseShadowBlade()
 						TemplarMeld()
@@ -465,19 +476,22 @@ function Tick( tick )
 						Puck()
 						Lifestealerrage()
 						UseEulScepterSelf()
-						wait = 0						
-				elseif  v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
-					if GetDistance2D(v,me) < 760 then
+						wait = 0		
+					end
+				end
+				if v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
+					if GetDistance2D(v,me) < 750 then
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
-							if wait == 0 then
-								waittime = GetTick() + 100 - (client.avgLatency / 1000)
-								wait = 1 
-							else
-								if GetTick() > waittime then
-									Nyx()
-									wait = 0
-								end
+						if wait == 0 then
+							waittime = GetTick() + 100 - (client.avgLatency/1000)
+							wait = 1
+						else
+							if GetTick() > waittime then
+								UseBladeMail()
+								Puck()
+								Nyx()
+								wait = 0
 							end
 						end
 					end
@@ -2065,6 +2079,89 @@ function Tick( tick )
 								end
 							end
 						end
+					elseif v:GetAbility(t).name == "tinker_heat_seeking_missile" then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 2500 then
+								Puck()
+								Antiblinkhome()
+								UseEulScepterSelf()
+								Nyx()
+								BountyhunterWindwalk()
+								WeaverShukuchi()
+								PLDoppleganger()
+								SandkinSandstorm()
+								UseShadowBlade()
+								TusksnowballTarget()
+								TemplarMeld()
+								Useshadowamulet()
+							end
+						end
+					elseif v:GetAbility(t).name == "sniper_assassinate" then
+						if math.ceil(v:GetAbility(t).cd - 0.9) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 3000 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Antiblinkhome()
+									TemplarRefraction()
+									AlchemistRage()
+									Juggernautfury()
+									Nyx()
+									UseEulScepterSelf()
+									SlarkPounce()
+									UseManta()
+									UseBladeMail()
+									PLDoppleganger()
+									EmberGuard()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "huskar_life_break" then
+						if math.ceil(v:GetAbility(t).cd - 0.7) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 550 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Antiblinkhome()
+									TemplarRefraction()
+									AlchemistRage()
+									Juggernautfury()
+									Nyx()
+									UseEulScepterSelf()
+									SlarkPounce()
+									UseManta()
+									UseBladeMail()
+									PLDoppleganger()
+									EmberGuard()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "life_stealer_open_wounds" then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 800 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									UseShadowBlade()
+									SlarkDarkPact()
+									PLDoppleganger()
+									UseEulScepterSelf()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "windrunner_shackleshot" then
+						if math.ceil(v:GetAbility(t).cd - 0.7) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 800 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Nyx()
+									UseShadowBlade()
+									SlarkDarkPact()
+									PLDoppleganger()
+									UseEulScepterSelf()
+								end
+							end
+						end
 					elseif v:GetAbility(t).name == "windrunner_powershot" then
 						if math.ceil(v:GetAbility(t).cd + 0.9) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
 							if GetDistance2D(v,me) < 1500 then
@@ -2909,22 +3006,6 @@ function WWColdEmbrace()
 				sleepTick= GetTick() +500
 				return 
 			end
-		end
-	end
-end
-
-function Useblackking()
-	for t = 1, 6 do
-		if me:HasItem(t) and me:GetItem(t).name == "item_black_king_bar" then
-			item_black_king_bar = me:GetItem(t)
-		end
-	end
-	if activated == 0 then
-		if item_black_king_bar and item_black_king_bar.state== -1 then
-			me:CastAbility(item_black_king_bar)
-			activated=1
-			sleepTick= GetTick() +500
-			return
 		end
 	end
 end
