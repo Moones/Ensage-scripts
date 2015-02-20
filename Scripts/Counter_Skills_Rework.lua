@@ -378,12 +378,9 @@ function Tick( tick )
 					if GetDistance2D(v,me) < 200 then
 						PuckW(true)	
 						target = v
-						UseShadowBlade()
-						Useblackking()
-						UseEulScepterSelf()
 						UseBlinkDagger() Antiblinkhome()
-						UseSheepStickTarget()
-						UseOrchidtarget() SkySilence()
+						Puck()
+						Nyx()
 					end
 				end
 				if v:GetAbility(4) and v:GetAbility(4).level > 0 and v:GetAbility(4).abilityPhase then
@@ -456,6 +453,7 @@ function Tick( tick )
 						waittime = GetTick() + 100 - (client.avgLatency/1000)
 						wait = 1 						
 					elseif GetTick() > waittime then
+						Antiblinkhome()
 						Nyx()
 						UseShadowBlade()
 						TemplarMeld()
@@ -465,19 +463,22 @@ function Tick( tick )
 						Puck()
 						Lifestealerrage()
 						UseEulScepterSelf()
-						wait = 0						
-				elseif  v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
-					if GetDistance2D(v,me) < 760 then
+						wait = 0		
+					end
+				end
+				if v:GetAbility(2) and v:GetAbility(2).level > 0 and v:GetAbility(2).abilityPhase then
+					if GetDistance2D(v,me) < 750 then
 						turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 						if turntime == 0 then
-							if wait == 0 then
-								waittime = GetTick() + 100 - (client.avgLatency / 1000)
-								wait = 1 
-							else
-								if GetTick() > waittime then
-									Nyx()
-									wait = 0
-								end
+						if wait == 0 then
+							waittime = GetTick() + 100 - (client.avgLatency/1000)
+							wait = 1
+						else
+							if GetTick() > waittime then
+								UseBladeMail()
+								Puck()
+								Nyx()
+								wait = 0
 							end
 						end
 					end
@@ -1013,23 +1014,6 @@ function Tick( tick )
 						LoneDruidUlt()
 						UseEulScepterSelf()
 						PLDoppleganger()
-					elseif k.speed == 1000 and k.source:GetAbility(4).name == "huskar_life_break" then
-						if math.ceil(k.source:GetAbility(4).cd - 0.1) == math.ceil(k.source:GetAbility(4):GetCooldown(k.source:GetAbility(4).level)) then									
-							Puck()
-							Nyx()
-							SlarkShadowDance()
-							Juggernautfury()
-							Lifestealerrage()
-							Embersleighttargetcal()
-							UseEulScepterSelf()
-							UseBlinkDagger() Antiblinkhome()
-							UseShadowBlade()
-							Useshadowamulet()
-							Useblackking()
-							UseBladeMail()
-							PLDoppleganger()
-							OracleFateEdict()
-						end
 					elseif k.source.name == "npc_dota_hero_sniper" and k.speed == 2500 and k.source:GetAbility(4) and math.ceil(k.source:GetAbility(4).cd - 0.1) ==  math.ceil(k.source:GetAbility(4):GetCooldown(k.source:GetAbility(4).level)) then
 						Puck()
 						UseBlinkDagger() Antiblinkhome()
@@ -1971,8 +1955,8 @@ function Tick( tick )
 							end
 						end
 					elseif v:GetAbility(t).name == "juggernaut_omni_slash" then
-						if math.ceil(v:GetAbility(t).cd - 0.3) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
-							if GetDistance2D(v,me) < 900 then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 350 then
 								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
 								if turntime == 0 then
 									Puck()
@@ -2035,6 +2019,38 @@ function Tick( tick )
 								-- Puck()
 							-- end
 						-- end
+					elseif v:GetAbility(t).name == "life_stealer_open_wounds" then
+						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 500 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									UseShadowBlade()
+									SlarkDarkPact()
+									PLDoppleganger()
+									UseEulScepterSelf()
+								end
+							end
+						end
+					elseif v:GetAbility(t).name == "huskar_life_break" then
+						if math.ceil(v:GetAbility(t).cd - 0.7) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
+							if GetDistance2D(v,me) < 550 then
+								turntime = (math.max(math.abs(FindAngleR(v) - math.rad(FindAngleBetween(v, me))) - 0.20, 0))
+								if turntime == 0 then
+									Puck()
+									Antiblinkhome()
+									TemplarRefraction()
+									AlchemistRage()
+									Juggernautfury()
+									Nyx()
+									UseEulScepterSelf()
+									SlarkDarkPact()
+									UseManta()
+									UseBladeMail()
+									PLDoppleganger()
+									EmberGuard()
+								end
+							end
+						end
 					elseif v:GetAbility(t).name == "skywrath_mage_mystic_flare" then
 						if math.ceil(v:GetAbility(t).cd - 0.1) ==  math.ceil(v:GetAbility(t):GetCooldown(v:GetAbility(t).level)) then
 							if GetDistance2D(v,me) < 1250 then
@@ -2905,22 +2921,6 @@ function WWColdEmbrace()
 	end
 end
 
-function Useblackking()
-	for t = 1, 6 do
-		if me:HasItem(t) and me:GetItem(t).name == "item_black_king_bar" then
-			item_black_king_bar = me:GetItem(t)
-		end
-	end
-	if activated == 0 then
-		if item_black_king_bar and item_black_king_bar.state== -1 then
-			me:CastAbility(item_black_king_bar)
-			activated=1
-			sleepTick= GetTick() +500
-			return
-		end
-	end
-end
-
 function ChaosKnightChaosBolt(tick)
 	if tt == nil then
 		sleepk = tick + 300
@@ -3039,7 +3039,7 @@ function UseEulScepterSelf()--self
 		if euls and euls.cd == 0 then
 			me:SafeCastItem(euls.name,me)
 			activated = 1
-			sleepTick = GetTick() + 2700
+			sleepTick = GetTick() + 500
 			return
 		end
 	end
