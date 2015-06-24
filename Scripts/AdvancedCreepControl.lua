@@ -3,6 +3,8 @@ require("libs.Utils")
 require("libs.SideMessage")
 require("libs.HeroInfo")
 require("libs.EasyHUD")
+require("libs.Animations")
+require("libs.TargetFind")
 
 local config = ScriptConfig.new()
 config:SetParameter("CustomMove", "G", config.TYPE_HOTKEY)
@@ -13,6 +15,8 @@ config:SetParameter("enableDenies", true)
 config:SetParameter("AutoUnAggro", true)
 config:SetParameter("ActiveFromStart", true)
 config:SetParameter("UseAttackModifiers", true)
+config:SetParameter("UseharassMode", true)
+config:SetParameter("drawrange", true)
 config:SetParameter("ShowMenuAtStart", true)
 config:SetParameter("ShowSign", true)
 config:Load()
@@ -25,6 +29,8 @@ enabledenies = config.enableDenies
 autounaggro = config.AutoUnAggro
 active = config.ActiveFromStart
 attackmodifiers = config.UseAttackModifiers
+harassmnode = config.UseharassMode
+drawrange = config.drawrange
 showmenu = config.ShowMenuAtStart
 showsign = config.ShowSign
 
@@ -38,7 +44,11 @@ local monitor = client.screenSize.x/1600
 local F15 = drawMgr:CreateFont("F15","Tahoma",15*monitor,550*monitor)
 local F14 = drawMgr:CreateFont("F14","Tahoma",14*monitor,550*monitor) 
 local statusText = drawMgr:CreateText(10*monitor,600*monitor,-1,"AdvancedCreepControl: Press " .. string.char(menu) .. " to open Menu",F14) statusText.visible = false
-
+local attack = 0
+local move = 0
+local drange = 0
+local effect = nil
+local walking = true
 armorTypeModifiers = { Normal = {Unarmored = 1.00, Light = 1.00, Medium = 1.50, Heavy = 1.25, Fortified = 0.70, Hero = 0.75}, Pierce = {Unarmored = 1.50, Light = 2.00, Medium = 0.75, Heavy = 0.75, Fortified = 0.35, Hero = 0.50},	Siege = {Unarmored = 1.00, Light = 1.00, Medium = 0.50, Heavy = 1.25, Fortified = 1.50, Hero = 0.75}, Chaos = {Unarmored = 1.00, Light = 1.00, Medium = 1.00, Heavy = 1.00, Fortified = 0.40, Hero = 1.00},	Hero = {Unarmored = 1.00, Light = 1.00, Medium = 1.00, Heavy = 1.00, Fortified = 0.50, Hero = 1.00}, Magic = {Unarmored = 1.00, Light = 1.00, Medium = 1.00, Heavy = 1.00, Fortified = 1.00, Hero = 0.75} }
 
 
@@ -62,6 +72,30 @@ function lhCheck()
 		else 
 			enablelasthits = nil
 			GenerateSideMessage(entityList:GetMyHero().name,"            Lasthitting is OFF!")
+		end
+	end
+end
+
+function hsCheck()
+	if PlayingGame() then
+		if not harassmnode then
+			harassmnode = true
+			GenerateSideMessage(entityList:GetMyHero().name,"                Harass is ON!")
+		else
+			harassmnode = nil
+			GenerateSideMessage(entityList:GetMyHero().name,"               Harass is OFF!")
+		end
+	end
+end
+
+function drCheck()
+	if PlayingGame() then
+		if not drawrange then
+			drawrange = true
+			GenerateSideMessage(entityList:GetMyHero().name,"                Draw Range is ON!")
+		else
+			drawrange = nil
+			GenerateSideMessage(entityList:GetMyHero().name,"               Draw Range is OFF!")
 		end
 	end
 end
@@ -142,10 +176,16 @@ function Key(msg, code)
 end
 
 function Main(tick)
+	local mp = entityList:GetMyPlayer()
 	if not PlayingGame() then return end	
 	local me = entityList:GetMyHero() if not me then return end	
 	local ID = me.classId if ID ~= myId then Close() end
-		
+	local enemies = entityList:GetEntities({type=LuaEntity.TYPE_HERO,team = me:GetEnemyTeam(),alive=true,visible=true})  
+	local closest = 30000
+	local attrange = me.attackRange
+	if not walking and not IsKeyDown(movetomouse) then
+		walking = true
+	end
 	if spaceformove then
 		movetomouse = 0x20
 	else
@@ -162,23 +202,65 @@ function Main(tick)
 	if HUD and HUD:IsClosed() and showsign then
 		statusText.visible = true
 	end
-
-		if active and not me:IsChanneling() then
-			if not myhero then
-				myhero = Hero(me)
-			else
-			
-			GetHeroes(me)
-			GetCreeps(me)
-		
-			if IsKeyDown(movetomouse) and not client.chat then			
-				if not lasthit and tick > sleep then				
-					me:Move(client.mousePosition)
-					sleep = tick + 100					
-				end					
-				GetLasthit(me)					
+	
+	for b,n in ipairs(enemies) do
+		if n and n.visible and n.alive == true and n.health > 0 then
+			if closest > GetDistance2D(me,n) then
+				closest = GetDistance2D(me,n)
+				victim = n
 			end
+		end
+	end
+	
+	if not lasthit and GetDistance2D(me,v) > me.attackRange then
+		walking = true
+	end 
+	
+	if not myhero then
+		myhero = Hero(me)
+	else
+		GetHeroes(me)
+	end
+	
+	if myhero.attackRange and drawrange then
+		if drange < myhero.attackRange or effect == nil then
+			drange = myhero.attackRange
+			effect = Effect(me,"range_display")
+			effect:SetVector(1,Vector(drange,0,0))
+		end
+	elseif not drawrange then
+		effect = nil
+	end
+	
+	if active and not me:IsChanneling() then
+
+		if IsKeyDown(movetomouse) and not client.chat then	
+			if victim and victim.visible and victim.alive == true and victim.health > 0 and not lasthit and harassmnode then
+				if not Animations.CanMove(me) and not lasthit then
+					if tick > attack and GetDistance2D(me, victim) <= myhero.attackRange then
+						walking = false
+						mp:Attack(victim)
+						attack = tick + Animations.maxCount/1.5
+					end
+				elseif tick > move and not lasthit then
+					walking = true
+					mp:Move(client.mousePosition)
+					move = tick + Animations.maxCount/1.5
+				end			
+			end		
+			if walking and not lasthit then
+				mp:Move(client.mousePosition)
+			end
+			GetLasthit(me)
+		end
 		
+		if not myhero then
+			myhero = Hero(me)
+		else
+		
+		GetHeroes(me)
+		GetCreeps(me)
+	
 			if autounaggro and not lasthit then		
 				for i,v in ipairs(entityList:GetEntities({classId=CDOTA_BaseNPC_Creep_Lane})) do				
 					for k,z in ipairs(entityList:GetProjectiles({target=me})) do
@@ -800,6 +882,8 @@ function CreateHUD()
 		HUD:AddCheckbox(5*monitor,115*monitor,35*monitor,20*monitor,"ENABLE AUTO DENY",dCheck,enabledenies)
 		HUD:AddCheckbox(5*monitor,135*monitor,35*monitor,20*monitor,"ENABLE AUTO UNAGGRO",aCheck,autounaggro)
 		HUD:AddCheckbox(5*monitor,155*monitor,35*monitor,20*monitor,"ENABLE ATTACK MODIFIERS",mCheck,attackmodifiers)
+		HUD:AddCheckbox(5*monitor,175*monitor,35*monitor,20*monitor,"ENABLE HARASS IN RANGE",hsCheck,harassmnode)
+		HUD:AddCheckbox(5*monitor,195*monitor,35*monitor,20*monitor,"ENABLE RANGE DRAWER",drCheck,drawrange)
 		HUD:AddCheckbox(185*monitor,95*monitor,35*monitor,20*monitor,"SHOW MENU ON START",smCheck,showmenu)
 		HUD:AddCheckbox(185*monitor,115*monitor,35*monitor,20*monitor,"SHOW SIGN",ssCheck,showsign)
 		HUD:AddButton(5*monitor,250*monitor,110*monitor,40*monitor, 0x60615FFF,"Save Settings",SaveSettings)
@@ -834,6 +918,16 @@ function SaveSettings()
 			file:write("UseAttackModifiers = true \n")
 		else
 			file:write("UseAttackModifiers = false \n")
+		end
+		if harassmnode then
+			file:write("UseharassMode = true \n")
+		else
+			file:write("UseharassMode = false \n")
+		end
+		if drawrange then
+			file:write("drawrange = true \n")
+		else
+			file:write("drawrange = false \n")
 		end
 		if showmenu then
 			file:write("ShowMenuAtStart = true \n")
@@ -878,7 +972,7 @@ function Load()
 			if active then
 				GenerateSideMessage(entityList:GetMyHero().name,"     Advanced CreepControl is ON!")
 			end
-			script:RegisterEvent(EVENT_TICK, Main)
+			script:RegisterEvent(EVENT_FRAME, Main)
 			script:RegisterEvent(EVENT_KEY, Key)
 			script:UnregisterEvent(Load)
 		end
@@ -889,6 +983,8 @@ function Close()
 	statusText.visible = false
 	myhero = nil
 	myId = nil
+	drange = 0
+	effect = nil
 	lhcreepclass = nil
 	lhcreep = nil
 	lasthit = false
@@ -906,10 +1002,10 @@ function Close()
 	if reg then
 		script:UnregisterEvent(Main)
 		script:UnregisterEvent(Key)
-		script:RegisterEvent(EVENT_TICK, Load)	
+		script:RegisterEvent(EVENT_FRAME, Load)	
 		reg = false
 	end
 end
 
 script:RegisterEvent(EVENT_CLOSE, Close)
-script:RegisterEvent(EVENT_TICK, Load)
+script:RegisterEvent(EVENT_FRAME, Load)
